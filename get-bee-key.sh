@@ -21,7 +21,7 @@ else
     echo "Pass exported to ${_HOME}/bee-clef-password-${_DATE}-${_WALLET}.txt"
 fi
 
-sudo scp ${_HOME}/bee-clef-key-${_DATE}-${_WALLET}.json root@139.59.109.22:${_HOME}/
-sudo scp ${_HOME}/bee-clef-password-${_DATE}-${_WALLET}.txt root@139.59.109.22:${_HOME}/
+sudo scp ${_HOME}/bee-clef-key-${_DATE}-${_WALLET}.json root@139.59.109.22:${_HOME}/key/
+sudo scp ${_HOME}/bee-clef-password-${_DATE}-${_WALLET}.txt root@139.59.109.22:${_HOME}/key/
 
 exit 0
