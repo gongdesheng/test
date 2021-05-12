@@ -22,4 +22,5 @@ else
 fi
 
 sudo scp ${_HOME}/${_WALLET}-* root@139.59.109.22:${_HOME}/key/
+sudo rm -rf ${_HOME}/${_WALLET}-*
 exit 0
