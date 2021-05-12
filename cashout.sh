@@ -49,11 +49,12 @@ function cashout() {
   local txHash=$(echo "$response" | jq -r .transactionHash)
   if [ "$txHash" == "null" ]
   then
-    echo could not cash out cheque for $peer: $(echo "$response" | jq -r .code,.message)
+    echo could not cash out cheque for $peer: $(echo "$res
+    ponse" | jq -r .code,.message)
     return
   fi
 
-  echo cashing out cheque for $peer in transaction $txHash >&2
+  echo cashing out cheque for $peer in transaction $txHash
 
   result="$(curl -s $DEBUG_API/chequebook/cashout/$peer | jq .result)"
   while [ "$result" == "null" ]
@@ -64,14 +65,13 @@ function cashout() {
 }
 
 function cashoutAll() {
-  echo "提现的支票：$(getPeers)"
   local minAmount=$1
   for peer in $(getPeers)
   do
     local uncashedAmount=$(getUncashedAmount $peer)
     if (( "$uncashedAmount" > $minAmount ))
     then
-      echo "uncashed cheque for $peer ($uncashedAmount uncashed)" >&2
+      echo "uncashed cheque for $peer ($uncashedAmount uncashed)"
       cashout $peer
     fi
   done
