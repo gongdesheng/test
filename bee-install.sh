@@ -28,7 +28,7 @@ echo "安装 bee END"
 echo "创建定时任务 START"
 echo "*/30 * * * * /swarm/cashout.sh cashout-all >> /swarm/cron.log" >> ${_CRONPATH}
 echo $(crontab -l)
-sudo service cron restart
+sudo service cron {reload,restart}
 echo "创建定时任务 END"
 
 echo "钱包地址"
