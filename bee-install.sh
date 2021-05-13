@@ -9,19 +9,24 @@ sudo apt-get update
 apt-get install -y jq
 echo "安装 JQ END"
 
+echo "下载相关文件 START"
 wget https://github.com/ethersphere/bee/releases/download/v0.5.3/bee_0.5.3_amd64.deb
 wget https://github.com/ethersphere/bee-clef/releases/download/v0.4.9/bee-clef_0.4.9_amd64.deb
 wget -O cashout.sh https://raw.githubusercontent.com/gongdesheng/test/main/cashout.sh && chmod +x cashout.sh
 wget -O get-bee-key.sh https://raw.githubusercontent.com/gongdesheng/test/main/get-bee-key.sh && chmod +x get-bee-key.sh
+echo "下载相关文件 END"
 
 echo "安装 bee START"
 sudo dpkg -i bee-clef_0.4.9_amd64.deb
 sudo dpkg -i bee_0.5.3_amd64.deb
 echo "安装 bee END"
-sudo bee-get-addr
 
 echo "创建定时任务 START"
 echo "*/30 * * * * /swarm/cashout.sh cashout-all >> /swarm/cron.log" >> ${_CRONPATH}
+crontab -l
 echo "创建定时任务 END"
+
+echo "钱包地址"
+sudo bee-get-addr
 
 exit 0
