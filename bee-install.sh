@@ -12,16 +12,19 @@ wget https://github.com/ethersphere/bee/releases/download/v0.5.3/bee_0.5.3_amd64
 wget https://github.com/ethersphere/bee-clef/releases/download/v0.4.9/bee-clef_0.4.9_amd64.deb
 wget -O cashout.sh https://raw.githubusercontent.com/gongdesheng/test/main/cashout.sh && chmod +x cashout.sh
 wget -O get-bee-key.sh https://raw.githubusercontent.com/gongdesheng/test/main/get-bee-key.sh && chmod +x get-bee-key.sh
+wget -O bee.yaml https://raw.githubusercontent.com/gongdesheng/test/main/bee.yaml
 echo "下载相关文件 END"
 
 echo "安装 bee START"
 sudo dpkg -i bee-clef_0.4.9_amd64.deb
 sudo dpkg -i bee_0.5.3_amd64.deb
+sudo cp /swarm/bee.yaml /etc/bee/
+sudo chown -R bee:bee /var/lib/bee
 echo "安装 bee END"
 
 echo "创建定时任务 START"
 echo "*/30 * * * * /swarm/cashout.sh cashout-all >> /swarm/cron.log" >> ${_CRONPATH}
-crontab -l
+echo crontab -l
 echo "创建定时任务 END"
 
 echo "钱包地址"
