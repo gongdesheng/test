@@ -1,8 +1,6 @@
 ##!/usr/bin/env bash
 _PATH=/swarm
 _CRONPATH=/var/spool/cron/crontabs/root
-mkdir ${_PATH}
-cd ${_PATH}
 
 echo "安装 JQ START"
 sudo apt-get update
