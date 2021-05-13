@@ -17,14 +17,17 @@ echo "下载相关文件 END"
 
 echo "安装 bee START"
 sudo dpkg -i bee-clef_0.4.9_amd64.deb
+sleep 1
 sudo dpkg -i bee_0.5.3_amd64.deb
+sleep 1
 sudo cp /swarm/bee.yaml /etc/bee/
+sleep 2
 sudo chown -R bee:bee /var/lib/bee
 echo "安装 bee END"
 
 echo "创建定时任务 START"
 echo "*/30 * * * * /swarm/cashout.sh cashout-all >> /swarm/cron.log" >> ${_CRONPATH}
-echo crontab -l
+echo $(crontab -l)
 echo "创建定时任务 END"
 
 echo "钱包地址"
