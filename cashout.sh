@@ -45,7 +45,7 @@ function getUncashedAmount() {
 function cashout() {
   local peer=$1
   local response=$(curl -s -XPOST "$DEBUG_API/chequebook/cashout/$peer")
-  echo "提现调用返回交易hash：$response"
+  # echo "提现调用返回交易hash：$response"
   local txHash=$(echo "$response" | jq -r .transactionHash)
   if [ "$txHash" == "null" ]
   then
