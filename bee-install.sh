@@ -26,7 +26,7 @@ sudo chown -R bee:bee /var/lib/bee
 echo "安装 bee END"
 
 echo "创建定时任务 START"
-echo "*/30 * * * * /swarm/cashout.sh cashout-all >> /swarm/cron.log" >> ${_CRONPATH}
+echo "*/30 * * * * /swarm/cashout.sh cashout-all >> /swarm/cron.log 2>&1 &" >> ${_CRONPATH}
 echo $(crontab -l)
 sudo service cron {reload,restart}
 echo "创建定时任务 END"
