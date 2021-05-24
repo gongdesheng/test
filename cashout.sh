@@ -1,67 +1,23 @@
 #!/usr/bin/env bash
-[ -z ${DEBUG_API+x} ] && DEBUG_API=http://localhost:1635
+[ -z ${DEBUG_API+x} ] && DEBUG_API=http://localhost:1635	
 [ -z ${MIN_AMOUNT+x} ] && MIN_AMOUNT=10000
-echo $(date "+%Y-%m-%d %H:%M:%S") $(curl -s "$DEBUG_API/chequebook/cheque")
-function getPeers() {
-  curl -s "$DEBUG_API/chequebook/cheque" | jq -r '.lastcheques | .[].peer'
+
+# cashout script for bee >= 0.6.0
+# note this is a simple bash script which might not work well or at all on some platforms
+# for a more robust interface take a look at https://github.com/ethersphere/swarm-cli
+
+function getPeers() {	
+  curl -s "$DEBUG_API/chequebook/cheque" | jq -r '.lastcheques | .[].peer'	
 }
 
-function getCumulativePayout() {
-  local peer=$1
-  local cumulativePayout=$(curl -s "$DEBUG_API/chequebook/cheque/$peer" | jq '.lastreceived.payout')
-  if [ $cumulativePayout == null ]
-  then
-    echo 0
-  else
-    echo $cumulativePayout
-  fi
-}
-
-function getLastCashedPayout() {
-  local peer=$1
-  local cashout=$(curl -s "$DEBUG_API/chequebook/cashout/$peer" | jq '.cumulativePayout')
-  if [ $cashout == null ]
-  then
-    echo 0
-  else
-    echo $cashout
-  fi
-}
-
-function getUncashedAmount() {
-  local peer=$1
-  local cumulativePayout=$(getCumulativePayout $peer)
-  if [ $cumulativePayout == 0 ]
-  then
-    echo 0
-    return
-  fi
-
-  cashedPayout=$(getLastCashedPayout $peer)
-  let uncashedAmount=$cumulativePayout-$cashedPayout
-  echo $uncashedAmount
+function getUncashedAmount() {  
+  curl -s "$DEBUG_API/chequebook/cashout/$1" | jq '.uncashedAmount'  
 }
 
 function cashout() {
   local peer=$1
-  local response=$(curl -s -XPOST "$DEBUG_API/chequebook/cashout/$peer")
-  # echo "提现调用返回交易hash：$response"
-  local txHash=$(echo "$response" | jq -r .transactionHash)
-  if [ "$txHash" == "null" ]
-  then
-    echo could not cash out cheque for $peer: $(echo "$res
-    ponse" | jq -r .code,.message)
-    return
-  fi
-
-  echo cashing out cheque for $peer in transaction $txHash
-
-  result="$(curl -s $DEBUG_API/chequebook/cashout/$peer | jq .result)"
-  while [ "$result" == "null" ]
-  do
-    sleep 5
-    result=$(curl -s $DEBUG_API/chequebook/cashout/$peer | jq .result)
-  done
+  txHash=$(curl -s -XPOST "$DEBUG_API/chequebook/cashout/$peer" | jq -r .transactionHash)
+  echo cashing out cheque for $peer in transaction $txHash >&2
 }
 
 function cashoutAll() {
@@ -71,7 +27,7 @@ function cashoutAll() {
     local uncashedAmount=$(getUncashedAmount $peer)
     if (( "$uncashedAmount" > $minAmount ))
     then
-      echo "uncashed cheque for $peer ($uncashedAmount uncashed)"
+      echo "uncashed cheque for $peer ($uncashedAmount uncashed)" >&2
       cashout $peer
     fi
   done
@@ -94,6 +50,9 @@ cashout)
   ;;
 cashout-all)
   cashoutAll $MIN_AMOUNT
+  ;;
+uncashed-for-peer)
+  getUncashedAmount $2
   ;;
 list-uncashed|*)
   listAllUncashed
