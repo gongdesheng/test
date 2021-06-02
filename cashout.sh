@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 [ -z ${DEBUG_API+x} ] && DEBUG_API=http://localhost:1635	
-[ -z ${MIN_AMOUNT+x} ] && MIN_AMOUNT=10000
+[ -z ${MIN_AMOUNT+x} ] && MIN_AMOUNT=10000	
 
 # cashout script for bee >= 0.6.0
 # note this is a simple bash script which might not work well or at all on some platforms
